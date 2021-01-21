@@ -2,13 +2,10 @@ package of
 
 import (
 	"context"
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"time"
 )
 
 const (
@@ -45,16 +42,9 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 		return nil, err
 	}
 
-	t := fmt.Sprintf("%d", time.Now().UTC().Unix()*1000-301000)
-	a := []byte(strings.Join([]string{c.Session, t, path, c.UserAgent, "onlyfans"}, "\n"))
-	h := sha1.New()
-	h.Write(a)
-	sha := hex.EncodeToString(h.Sum(nil))
 	req.Header.Add("Accept", fmt.Sprintf("%s, %s, %s", "application/json", "text/plain", "*/*"))
 	req.Header.Add("User-Agent", c.UserAgent)
 	req.Header.Add("Access-Token", c.Session)
-	req.Header.Add("Time", t)
-	req.Header.Add("Sign", sha)
 	req.AddCookie(&http.Cookie{
 		Name:  "sess",
 		Value: c.Session,
