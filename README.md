@@ -1,5 +1,7 @@
 # Go-OF
 
+a golang cli to interact with the onlyfans api
+
 ## Local Install
 Assuming you have go installed..
 
