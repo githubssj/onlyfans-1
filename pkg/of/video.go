@@ -36,7 +36,7 @@ type Video struct {
 	LinkedPosts        []interface{} `json:"linkedPosts"`
 	LinkedUsers        []interface{} `json:"linkedUsers"`
 	LockedText         bool          `json:"lockedText"`
-	VideoMedia         []VideoMedia  `json:"media"`
+	Media              []Media       `json:"media,omitempty"`
 	MediaCount         int64         `json:"mediaCount"`
 	MentionedUsers     []interface{} `json:"mentionedUsers"`
 	PostedAt           string        `json:"postedAt"`
@@ -47,50 +47,6 @@ type Video struct {
 	ResponseType       string        `json:"responseType"`
 	StreamID           interface{}   `json:"streamId"`
 	Text               string        `json:"text"`
-}
-
-// VideoMedia describes video media
-type VideoMedia struct {
-	CanView          bool   `json:"canView"`
-	ConvertedToVideo bool   `json:"convertedToVideo"`
-	CreatedAt        string `json:"createdAt"`
-	Files            struct {
-		Preview struct {
-			URL string `json:"url"`
-		} `json:"preview"`
-	} `json:"files"`
-	Full     string `json:"full"`
-	HasError bool   `json:"hasError"`
-	ID       int64  `json:"id"`
-	Info     struct {
-		Preview struct {
-			Height int64 `json:"height"`
-			Size   int64 `json:"size"`
-			Width  int64 `json:"width"`
-		} `json:"preview"`
-		Source struct {
-			Duration int64  `json:"duration"`
-			Height   int64  `json:"height"`
-			Size     int64  `json:"size"`
-			Source   string `json:"source"`
-			Width    int64  `json:"width"`
-		} `json:"source"`
-	} `json:"info"`
-	Preview string `json:"preview"`
-	Source  struct {
-		Duration int64  `json:"duration"`
-		Height   int64  `json:"height"`
-		Size     int64  `json:"size"`
-		Source   string `json:"source"`
-		Width    int64  `json:"width"`
-	} `json:"source"`
-	SquarePreview string `json:"squarePreview"`
-	Thumb         string `json:"thumb"`
-	Type          string `json:"type"`
-	VideoSources  struct {
-		Two40   string `json:"240"`
-		Seven20 string `json:"720"`
-	} `json:"videoSources"`
 }
 
 // ListVideos from a user

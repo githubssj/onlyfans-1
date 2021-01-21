@@ -76,54 +76,26 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 	return resp, nil
 }
 
-// DownloadFile downloads a file
-func (c *Client) DownloadFile(ctx context.Context, Media interface{}, name, base string) error {
-	url := ""
-	id := 0
-	switch Media.(type) {
-	case PostMedia:
-		p, ok := Media.(PostMedia)
-		if !ok {
-			return fmt.Errorf("invalid post media")
-		}
-
-		url = p.Source.Source
-		id = int(p.ID)
-	case PhotoMedia:
-		p, ok := Media.(PhotoMedia)
-		if !ok {
-			return fmt.Errorf("invalid photo media")
-		}
-
-		url = p.Source.Source
-		id = int(p.ID)
-	case VideoMedia:
-		p, ok := Media.(VideoMedia)
-		if !ok {
-			return fmt.Errorf("invalid video media")
-		}
-
-		url = p.Source.Source
-		id = int(p.ID)
-	default:
-		return fmt.Errorf("unable to retrieve media url")
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return err
-	}
-
-	resp, err := c.Client.Do(req)
-	if err != nil {
-		return err
-	}
-
+// DownloadContent downloads a content
+func (c *Client) DownloadContent(ctx context.Context, req []Media, name, saveDir string) error {
 	dir := strings.ReplaceAll(name, " ", "")
-	f := fmt.Sprintf("%d.%s", id, getExtensionFromURL(url))
-	err = SaveFile(base, dir, f, resp.Body)
-	if err != nil {
-		return err
+	for _, m := range req {
+		req, err := http.NewRequest(http.MethodGet, m.Source.Source, nil)
+		if err != nil {
+			return err
+		}
+
+		resp, err := c.Client.Do(req)
+		if err != nil {
+			return err
+		}
+
+		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(m.Source.Source))
+		err = SaveFile(saveDir, dir, f, resp.Body)
+		if err != nil {
+			return err
+
+		}
 	}
 
 	return nil

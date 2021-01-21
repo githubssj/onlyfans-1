@@ -100,47 +100,7 @@ type Post struct {
 	LinkedUsers        []interface{} `json:"linkedUsers,omitempty"`
 	LinkedPosts        []interface{} `json:"linkedPosts,omitempty"`
 	CanViewMedia       bool          `json:"canViewMedia,omitempty"`
-	PostMedia          []PostMedia   `json:"media,omitempty"`
-}
-
-// PostMedia describe post media
-type PostMedia struct {
-	ID               int       `json:"id,omitempty"`
-	Type             string    `json:"type,omitempty"`
-	ConvertedToVideo bool      `json:"convertedToVideo,omitempty"`
-	CanView          bool      `json:"canView,omitempty"`
-	HasError         bool      `json:"hasError,omitempty"`
-	CreatedAt        time.Time `json:"createdAt,omitempty"`
-	Info             struct {
-		Source struct {
-			Source   string `json:"source,omitempty"`
-			Width    int    `json:"width,omitempty"`
-			Height   int    `json:"height,omitempty"`
-			Size     int    `json:"size,omitempty"`
-			Duration int    `json:"duration,omitempty"`
-		} `json:"source,omitempty"`
-		Preview struct {
-			Width  int `json:"width,omitempty"`
-			Height int `json:"height,omitempty"`
-			Size   int `json:"size,omitempty"`
-		} `json:"preview,omitempty"`
-	} `json:"info,omitempty"`
-	Source struct {
-		Source   string `json:"source,omitempty"`
-		Width    int    `json:"width,omitempty"`
-		Height   int    `json:"height,omitempty"`
-		Size     int    `json:"size,omitempty"`
-		Duration int    `json:"duration,omitempty"`
-	} `json:"source,omitempty"`
-	SquarePreview string `json:"squarePreview,omitempty"`
-	Full          string `json:"full,omitempty"`
-	Preview       string `json:"preview,omitempty"`
-	Thumb         string `json:"thumb,omitempty"`
-	Files         struct {
-		Preview struct {
-			URL string `json:"url,omitempty"`
-		} `json:"preview,omitempty"`
-	} `json:"files,omitempty"`
+	Media              []Media       `json:"media,omitempty"`
 }
 
 // ListPosts from a user

@@ -35,7 +35,6 @@ type Photo struct {
 	LinkedPosts        []interface{} `json:"linkedPosts,omitempty"`
 	LinkedUsers        []interface{} `json:"linkedUsers,omitempty"`
 	LockedText         bool          `json:"lockedText,omitempty"`
-	PhotoMedia         []PhotoMedia  `json:"media,omitempty"`
 	MediaCount         int64         `json:"mediaCount,omitempty"`
 	MentionedUsers     []interface{} `json:"mentionedUsers,omitempty"`
 	PostedAt           string        `json:"postedAt,omitempty"`
@@ -46,50 +45,19 @@ type Photo struct {
 	ResponseType       string        `json:"responseType,omitempty"`
 	StreamID           interface{}   `json:"streamId,omitempty"`
 	Text               string        `json:"text,omitempty"`
+	Media              []Media       `json:"media,omitempty"`
 }
 
-// PhotoMedia describes photo media
-type PhotoMedia struct {
-	CanView          bool   `json:"canView,omitempty"`
-	ConvertedToVideo bool   `json:"convertedToVideo,omitempty"`
-	CreatedAt        string `json:"createdAt,omitempty"`
-	Files            struct {
-		Preview struct {
-			URL string `json:"url,omitempty"`
-		} `json:"preview,omitempty"`
-	} `json:"files,omitempty"`
-	Full     string `json:"full,omitempty"`
-	HasError bool   `json:"hasError,omitempty"`
-	ID       int64  `json:"id,omitempty"`
-	Info     struct {
-		Preview struct {
-			Height int64 `json:"height,omitempty"`
-			Size   int64 `json:"size,omitempty"`
-			Width  int64 `json:"width,omitempty"`
-		} `json:"preview,omitempty"`
-		Source struct {
-			Duration int64  `json:"duration,omitempty"`
-			Height   int64  `json:"height,omitempty"`
-			Size     int64  `json:"size,omitempty"`
-			Source   string `json:"source,omitempty"`
-			Width    int64  `json:"width,omitempty"`
-		} `json:"source,omitempty"`
-	} `json:"info,omitempty"`
-	Preview string `json:"preview,omitempty"`
-	Source  struct {
+// Media describes media
+type Media struct {
+	ID     int64 `json:"id"`
+	Source struct {
 		Duration int64  `json:"duration,omitempty"`
 		Height   int64  `json:"height,omitempty"`
 		Size     int64  `json:"size,omitempty"`
 		Source   string `json:"source,omitempty"`
 		Width    int64  `json:"width,omitempty"`
 	} `json:"source,omitempty"`
-	SquarePreview string `json:"squarePreview,omitempty"`
-	Thumb         string `json:"thumb,omitempty"`
-	Type          string `json:"type,omitempty"`
-	VideoSources  struct {
-		Two40   interface{} `json:"240,omitempty"`
-		Seven20 interface{} `json:"720,omitempty"`
-	} `json:"videoSources,omitempty"`
 }
 
 // ListPhotos from a user
