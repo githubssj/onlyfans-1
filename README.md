@@ -1,6 +1,6 @@
 # Go-OF
 
-a golang cli to interact with the onlyfans api
+A go CLI to scrape and archive content from onlyfans.
 
 ## Local Install
 Assuming you have go installed..
@@ -11,10 +11,13 @@ or
 
 `git clone https://github.com/januairi/go-of.git` then cd into the directory and run `go install`
 
-go-of use a config file in the users $HOME directory called ~/.go-of
-it can be a yaml or json file
+go-of makes use of a config file in the users $HOME directory that can be YAML or JSON format. The file can be called ~/.go-of.json or ~/.go-of.yaml
 
-it requires the following key-value pairs
+You can also set environment variables or pass the key-value pairs on the command line.
+
+These are templates that can be used for your config file:
+
+YAML:
 ```
 token: app-token
 session: access-token or sess
@@ -23,7 +26,27 @@ auth_id: auth-id
 save_dir: abs/path/to/where/content/should/be/saved
 ```
 
-these values can be found by logging into onlyfans and inspecting the network api calls that have query params with the value ?app-token=some-value
+JSON:
+```
+{
+   "token": "app-token",
+   "session": "access-token or sess",
+   "user_agent": "user-agent",
+   "auth_id": "auth-id",
+   "save_dir": "abs/path/to/where/content/should/be/saved"
+}
+```
+
+These values can be found by logging into onlyfans and inspecting the network api calls that have query params with the value ?app-token=some-value.
+
+In chrome you can right click on the web page, click inspect, and navigate to the network tab.
+
+You can filter the api calls with `?app-token=`.
+![network](examples/network.png "config help")
+
+
+
+Once you find an appropriate api call, clicking on the headers should look like the following:
 ![example](examples/example.png "config help")
 
 ## Commands
@@ -48,4 +71,4 @@ No you can't download content you haven't paid for.
 
 No this isn't an onlyfans hack.
 
-No information from this program is shared.
+No information used by this program is shared.
