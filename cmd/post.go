@@ -56,7 +56,7 @@ var downloadArchivedPostcmd = &cobra.Command{
 			log.Fatalf("unable to lookup user: %v", err)
 		}
 
-		ps, err := c.ListArchivedPosts(ctx, fmt.Sprintf("%d", u.ID))
+		ps, err := c.ListArchivedPosts(ctx, u.ID)
 		if err != nil {
 			log.Fatal(err)
 		}

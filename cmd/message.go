@@ -9,28 +9,29 @@ import (
 	"github.com/spf13/viper"
 )
 
-// downloadVideoCmd represents the video command
-var downloadVideoCmd = &cobra.Command{
-	Use:   "video",
-	Short: "download videos from a user",
-	Long:  `download videos from a user`,
+// downloadMessageCmd represents the message command
+var downloadMessageCmd = &cobra.Command{
+	Use:   "message",
+	Short: "get content from messages",
+	Long:  `get content from messages`,
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		c := of.NewClient(viper.GetString("token"), viper.GetString("session"), viper.GetString("user_agent"), viper.GetString("auth_id"))
 		username := args[0]
 		ctx := context.Background()
+
 		u, err := c.GetUser(ctx, username)
 		if err != nil {
 			log.Fatalf("unable to lookup user: %v", err)
 		}
 
-		vs, err := c.ListVideos(ctx, u.ID)
+		ms, err := c.ListMessages(ctx, u.ID)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		for _, p := range vs {
-			err = c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
+		for _, m := range ms {
+			err = c.DownloadContent(ctx, m.Media, u.Name, viper.GetString("save_dir"))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -39,5 +40,5 @@ var downloadVideoCmd = &cobra.Command{
 }
 
 func init() {
-	downloadCmd.AddCommand(downloadVideoCmd)
+	downloadCmd.AddCommand(downloadMessageCmd)
 }
