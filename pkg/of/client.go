@@ -70,6 +70,10 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 func (c *Client) DownloadContent(ctx context.Context, req []Media, name, saveDir string) error {
 	dir := strings.ReplaceAll(name, " ", "")
 	for _, m := range req {
+		if m.Source.Source == "" {
+			continue
+		}
+
 		req, err := http.NewRequest(http.MethodGet, m.Source.Source, nil)
 		if err != nil {
 			return err

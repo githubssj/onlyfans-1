@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// userCmd represents the user command
-var userCmd = &cobra.Command{
+// getUserCmd represents the user command
+var getUserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Get user information",
 	Long:  `Get user information`,
@@ -35,5 +35,5 @@ var userCmd = &cobra.Command{
 }
 
 func init() {
-	getCmd.AddCommand(userCmd)
+	getCmd.AddCommand(getUserCmd)
 }

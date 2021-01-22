@@ -110,6 +110,7 @@ func (c *Client) ListPosts(ctx context.Context, userID string) ([]*Post, error) 
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -126,8 +127,8 @@ func (c *Client) ListPosts(ctx context.Context, userID string) ([]*Post, error) 
 }
 
 // ListArchivedPosts list archived posts from a user
-func (c *Client) ListArchivedPosts(ctx context.Context, userID string) ([]*Post, error) {
-	path := fmt.Sprintf("/users/%s/posts/archived?app-token=%s", userID, c.Token)
+func (c *Client) ListArchivedPosts(ctx context.Context, userID int) ([]*Post, error) {
+	path := fmt.Sprintf("/users/%d/posts/archived?app-token=%s", userID, c.Token)
 	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		return nil, err

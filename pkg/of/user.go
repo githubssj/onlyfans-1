@@ -152,6 +152,7 @@ func (c *Client) GetUser(ctx context.Context, username string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

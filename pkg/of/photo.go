@@ -67,6 +67,7 @@ func (c *Client) ListPhotos(ctx context.Context, userID string) ([]*Photo, error
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

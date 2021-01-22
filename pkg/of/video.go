@@ -50,12 +50,13 @@ type Video struct {
 }
 
 // ListVideos from a user
-func (c *Client) ListVideos(ctx context.Context, userID string) ([]*Video, error) {
-	path := fmt.Sprintf("/users/%s/posts/videos?limit=1000&order=publish_date_desc&skip_users=all&skip_users_dups=1&app-token=%s", userID, c.Token)
+func (c *Client) ListVideos(ctx context.Context, userID int) ([]*Video, error) {
+	path := fmt.Sprintf("/users/%d/posts/videos?limit=1000&order=publish_date_desc&skip_users=all&skip_users_dups=1&app-token=%s", userID, c.Token)
 	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
