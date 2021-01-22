@@ -70,11 +70,12 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 func (c *Client) DownloadContent(ctx context.Context, req []Media, name, saveDir string) error {
 	dir := strings.ReplaceAll(name, " ", "")
 	for _, m := range req {
-		if m.Source.Source == "" {
+		source := getSource(m)
+		if source == "" {
 			continue
 		}
 
-		req, err := http.NewRequest(http.MethodGet, m.Source.Source, nil)
+		req, err := http.NewRequest(http.MethodGet, source, nil)
 		if err != nil {
 			return err
 		}
@@ -84,7 +85,7 @@ func (c *Client) DownloadContent(ctx context.Context, req []Media, name, saveDir
 			return err
 		}
 
-		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(m.Source.Source))
+		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
 		err = SaveFile(saveDir, dir, f, resp.Body)
 		if err != nil {
 			return err
@@ -98,4 +99,16 @@ func (c *Client) DownloadContent(ctx context.Context, req []Media, name, saveDir
 func getExtensionFromURL(url string) string {
 	u := url[:strings.Index(url, "?")+1]
 	return u[strings.LastIndex(u, ".")+1 : strings.Index(u, "?")]
+}
+
+func getSource(m Media) string {
+	if m.Source != nil && m.Source.FileSource != "" {
+		return m.Source.FileSource
+	}
+
+	if m.Files != nil && m.Files.Source != nil && m.Files.Source.URL != "" {
+		return m.Files.Source.URL
+	}
+
+	return ""
 }
