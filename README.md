@@ -61,6 +61,7 @@ example: `go-of download photo onlyfansuser1234`
 | `go-of download post`   | username        | Downloads post media to directory provided in config      |
 | `go-of download archived post`   | username        | Downloads post media to directory provided in config      |
 | `go-of download message`   | username        | Downloads message media to directory provided in config      |
+| `go-of download highlight`   | username        | Downloads story highlights media to directory provided in config      |
 | `go-of get user`   | username        | Spits out user info in json format    |
 
 
