@@ -50,14 +50,21 @@ type Photo struct {
 
 // Media describes media
 type Media struct {
-	ID     int64 `json:"id"`
-	Source struct {
-		Duration int64  `json:"duration,omitempty"`
-		Height   int64  `json:"height,omitempty"`
-		Size     int64  `json:"size,omitempty"`
-		Source   string `json:"source,omitempty"`
-		Width    int64  `json:"width,omitempty"`
-	} `json:"source,omitempty"`
+	ID     int64   `json:"id"`
+	Source *Source `json:"source,omitempty"`
+	Files  *struct {
+		Source *Source `json:"source"`
+	} `json:"files"`
+}
+
+// Source describes a media source
+type Source struct {
+	Duration   int64  `json:"duration,omitempty"`
+	Height     int64  `json:"height,omitempty"`
+	Size       int64  `json:"size,omitempty"`
+	URL        string `json:"url,omitempty"`
+	FileSource string `json:"source,omitempty"`
+	Width      int64  `json:"width,omitempty"`
 }
 
 // ListPhotos from a user
