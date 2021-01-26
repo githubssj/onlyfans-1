@@ -3,13 +3,19 @@
 A go CLI to scrape and archive content from onlyfans.
 
 ## Local Install
-Assuming you have go installed..
+Assuming you have a proper [go installation](https://golang.org/doc/install) there are few options to running the cli.
+
+You can grab the cli by running:
 
 `go get github.com/januairi/go-of`
 
 or
 
-`git clone https://github.com/januairi/go-of.git` then cd into the directory and run `go install`
+`git clone https://github.com/januairi/go-of.git`
+
+You can install the binary by running `go install` from the root directory of the project. If you are running the binary you can test if it was installed properly by typing `go-of` into your command line. All commands will need to have a prefix of `go-of` to run them if you are running the commands via the binary.
+
+You can also run `go run main.go download photo username1234` when you are in the projects root directory. 
 
 go-of makes use of a config file in the users $HOME directory that can be YAML or JSON format. The file can be called ~/.go-of.json or ~/.go-of.yaml
 
