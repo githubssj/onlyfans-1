@@ -17,6 +17,8 @@ You can install the binary by running `go install` from the root directory of th
 
 You can also run `go run main.go download photo username1234` when you are in the projects root directory. 
 
+A list of commands can be found [here](https://github.com/januairi/go-of/blob/main/README.md#commands)
+
 go-of makes use of a config file in the users $HOME directory that can be YAML or JSON format. The file can be called ~/.go-of.json or ~/.go-of.yaml
 
 You can also set environment variables or pass the key-value pairs on the command line.
