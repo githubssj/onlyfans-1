@@ -82,3 +82,5 @@ No you can't download content you haven't paid for.
 No this isn't an onlyfans hack.
 
 No information used by this program is shared.
+
+If nothing is being pulled when running commands, make sure you session/access-token has not changed or expired. If it has you'll need to use that new token isntead.
