@@ -56,7 +56,7 @@ JSON:
 
 These values can be found by logging into onlyfans and inspecting the network api calls that have query params with the value ?app-token=some-value.
 
-In chrome you can right click on the web page, click inspect, and navigate to the network tab.
+In chrome you can right click on the web page, click inspect, and navigate to the network tab. You will probably need to refresh the page after opening the network tab as it will probably be empty when initially opened.
 
 You can filter the api calls with `?app-token=`.
 ![network](examples/network.png "config help")
