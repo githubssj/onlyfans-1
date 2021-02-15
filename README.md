@@ -3,7 +3,16 @@
 A go CLI to scrape and archive content from onlyfans.
 
 ## Local Install
-Assuming you have a proper [go installation](https://golang.org/doc/install) there are few options to running the cli.
+First we need to [install go](https://golang.org/doc/install).
+
+Once you have go installed, you'll need to set up your go environment properly.
+I use the following environment variables in my setup. Here is an [article](https://www.digitalocean.com/community/tutorials/understanding-the-gopath) that explains a bit more in depth what these configurations do.
+
+```
+export GOPATH=$HOME/go-work
+export GO111MODULLES=on
+export PATH=$PATH:$GOPATH/bin
+```
 
 You can grab the cli by running:
 
@@ -15,7 +24,7 @@ or
 
 You can install the binary by running `go install` from the root directory of the project. If you are running the binary you can test if it was installed properly by typing `go-of` into your command line. All commands will need to have a prefix of `go-of` to run them if you are running the commands via the binary.
 
-You can also run `go run main.go download photo username1234` when you are in the projects root directory. 
+You can also run `go run main.go download photo username1234` when you are in the projects root directory. You will need to cd into this directory once you have it pulled down.
 
 A list of commands can be found [here](https://github.com/januairi/go-of/blob/main/README.md#commands)
 
