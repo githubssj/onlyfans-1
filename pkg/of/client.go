@@ -69,8 +69,7 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 // DownloadContent downloads a content
 func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) error {
 	dir := strings.ReplaceAll(name, " ", "")
-	for i := 0; i < len(media); i++ {
-		m := media[i]
+	for _, m := range media {
 		source := getSource(m)
 		if source == "" {
 			continue
