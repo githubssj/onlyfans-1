@@ -105,7 +105,7 @@ type Post struct {
 
 // ListPosts from a user
 func (c *Client) ListPosts(ctx context.Context, userID string) ([]*Post, error) {
-	path := fmt.Sprintf("/users/%s/posts?app-token=%s", userID, c.Token)
+	path := fmt.Sprintf("/users/%s/posts?app-token=%s&limit=1000", userID, c.Token)
 	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		return nil, err
