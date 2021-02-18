@@ -31,10 +31,7 @@ var downloadMessageCmd = &cobra.Command{
 		}
 
 		for _, m := range ms {
-			err = c.DownloadContent(ctx, m.Media, u.Name, viper.GetString("save_dir"))
-			if err != nil {
-				log.Fatal(err)
-			}
+			c.DownloadContent(ctx, m.Media, u.Name, viper.GetString("save_dir"))
 		}
 	},
 }

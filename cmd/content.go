@@ -25,14 +25,13 @@ var downloadContentCmd = &cobra.Command{
 			log.Fatalf("unable to lookup user: %v", err)
 		}
 
-		saveDir := viper.GetString("save_dir")
-
+		media := make([]of.Media, 0)
 		ps, err := c.ListPhotos(ctx, fmt.Sprintf("%d", u.ID))
 		if err != nil {
 			log.Fatal(err)
 		}
 		for _, p := range ps {
-			go c.DownloadContent(ctx, p.Media, u.Name, saveDir)
+			media = append(media, p.Media...)
 		}
 
 		hs, err := c.ListHighlights(ctx, u.ID)
@@ -41,7 +40,7 @@ var downloadContentCmd = &cobra.Command{
 		}
 		for _, h := range hs {
 			for _, s := range h.Stories {
-				go c.DownloadContent(ctx, s.Media, u.Name, saveDir)
+				media = append(media, s.Media...)
 			}
 		}
 
@@ -50,7 +49,7 @@ var downloadContentCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		for _, m := range ms {
-			go c.DownloadContent(ctx, m.Media, u.Name, saveDir)
+			media = append(media, m.Media...)
 		}
 
 		posts, err := c.ListPosts(ctx, fmt.Sprintf("%d", u.ID))
@@ -58,7 +57,7 @@ var downloadContentCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		for _, p := range posts {
-			go c.DownloadContent(ctx, p.Media, u.Name, saveDir)
+			media = append(media, p.Media...)
 		}
 
 		vs, err := c.ListVideos(ctx, u.ID)
@@ -66,8 +65,11 @@ var downloadContentCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		for _, v := range vs {
-			go c.DownloadContent(ctx, v.Media, u.Name, saveDir)
+			media = append(media, v.Media...)
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
+		log.Printf("downloaded %d files", len(media))
 	},
 }
 

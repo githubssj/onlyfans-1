@@ -4,16 +4,13 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
+	"sync"
 )
 
-const (
-	// RFC2822 time format
-	RFC2822 = "Mon, 02 Jan 2006 15:04:05 -0700"
-)
-
-// Client describes an of client
+// Client describes an onlyfans client
 type Client struct {
 	Client    *http.Client
 	Token     string
@@ -67,32 +64,38 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 }
 
 // DownloadContent downloads a content
-func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) error {
+func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
-	for _, m := range media {
-		source := getSource(m)
-		if source == "" {
-			continue
-		}
+	wg := &sync.WaitGroup{}
+	for i := 0; i < len(media); i++ {
+		m := media[i]
+		go func() {
+			wg.Add(1)
+			defer wg.Done()
+			source := getSource(m)
+			if source == "" {
+				return
+			}
 
-		req, err := http.NewRequest(http.MethodGet, source, nil)
-		if err != nil {
-			return err
-		}
+			req, err := http.NewRequest(http.MethodGet, source, nil)
+			if err != nil {
+				log.Println(err)
+			}
 
-		resp, err := c.Client.Do(req)
-		if err != nil {
-			return err
-		}
+			resp, err := c.Client.Do(req)
+			if err != nil {
+				log.Println(err)
+			}
 
-		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
-		err = SaveFile(saveDir, dir, f, resp.Body)
-		if err != nil {
-			return err
-		}
+			f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
+			err = SaveFile(saveDir, dir, f, resp.Body)
+			if err != nil {
+				log.Println(err)
+			}
+		}()
 	}
 
-	return nil
+	wg.Wait()
 }
 
 func getExtensionFromURL(url string) string {

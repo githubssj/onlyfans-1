@@ -31,10 +31,8 @@ var downloadPhotoCmd = &cobra.Command{
 		}
 
 		for _, p := range ps {
-			err = c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
-			if err != nil {
-				log.Fatal(err)
-			}
+			c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
+
 		}
 	},
 }
