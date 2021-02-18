@@ -31,11 +31,9 @@ var downloadPostcmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		saveDir := viper.GetString("save_dir")
 		for _, p := range ps {
-			err = c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
-			if err != nil {
-				log.Fatal(err)
-			}
+			c.DownloadContent(ctx, p.Media, u.Name, saveDir)
 		}
 	},
 }
@@ -61,11 +59,9 @@ var downloadArchivedPostcmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		saveDir := viper.GetString("save_dir")
 		for _, p := range ps {
-			err = c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
-			if err != nil {
-				log.Fatal(err)
-			}
+			c.DownloadContent(ctx, p.Media, u.Name, saveDir)
 		}
 	},
 }

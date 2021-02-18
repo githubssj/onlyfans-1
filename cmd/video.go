@@ -29,11 +29,9 @@ var downloadVideoCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		for _, p := range vs {
-			err = c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
-			if err != nil {
-				log.Fatal(err)
-			}
+		saveDir := viper.GetString("save_dir")
+		for _, v := range vs {
+			c.DownloadContent(ctx, v.Media, u.Name, saveDir)
 		}
 	},
 }
