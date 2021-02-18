@@ -51,7 +51,7 @@ type Highlight struct {
 
 // ListHighlights from a user
 func (c *Client) ListHighlights(ctx context.Context, userID int) ([]*Highlight, error) {
-	path := fmt.Sprintf("/users/%d/stories/highlights?unf=1&app-token=%s", userID, c.Token)
+	path := fmt.Sprintf("/users/%d/stories/highlights?unf=1&app-token=%s&limit=10000", userID, c.Token)
 	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		log.Fatal(err)
