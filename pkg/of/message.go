@@ -16,7 +16,7 @@ type Message struct {
 	Text         string        `json:"text,omitempty"`
 	LockedText   bool          `json:"lockedText,omitempty"`
 	IsFree       bool          `json:"isFree,omitempty"`
-	Price        int           `json:"price,omitempty"`
+	Price        interface{}   `json:"price,omitempty"` //this fields type seems to switch occasionally..?
 	IsMediaReady bool          `json:"isMediaReady,omitempty"`
 	MediaCount   int           `json:"mediaCount,omitempty"`
 	Media        []Media       `json:"media,omitempty"`
