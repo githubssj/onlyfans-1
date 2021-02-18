@@ -64,7 +64,7 @@ example: `go-of download photo onlyfansuser1234`
 
 | Command      | Args | Output    |
 | :---        |    :----:   |          ---: |
-| `go-of download contentn`       | username       | Downloads all media content from a user to the directory provided in config   |
+| `go-of download content`       | username       | Downloads all media content from a user to the directory provided in config   |
 | `go-of download photo`       | username       | Downloads photos to the directory provided in config   |
 | `go-of download video`   | username        | Downloads videos to the directory provided in config      |
 | `go-of download post`   | username        | Downloads post media to the directory provided in config      |
