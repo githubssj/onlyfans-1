@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -148,13 +147,7 @@ type User struct {
 // GetUser looks up an of user by their username
 func (c *Client) GetUser(ctx context.Context, username string) (*User, error) {
 	path := fmt.Sprintf("/users/%s?app-token=%s", username, c.Token)
-	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		return nil, err
 	}

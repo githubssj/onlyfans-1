@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -54,13 +53,7 @@ func (c *Client) ListMessages(ctx context.Context, userID int) ([]Message, error
 
 	for hasMore {
 		path := fmt.Sprintf("/chats/%d/messages?limit=1000&offset=%d&order=desc&skip_users=all&skip_users_dups=1&app-token=%s", userID, offset, c.Token)
-		resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 		if err != nil {
 			return nil, err
 		}

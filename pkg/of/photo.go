@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -70,13 +69,7 @@ type Source struct {
 // ListPhotos from a user
 func (c *Client) ListPhotos(ctx context.Context, userID string) ([]*Photo, error) {
 	path := fmt.Sprintf("/users/%s/posts/photos?limit=1000&order=publish_date_desc&skip_users=all&skip_users_dups=1&app-token=%s", userID, c.Token)
-	resp, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
 		return nil, err
 	}
