@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 )
 
 // Client describes an onlyfans client
@@ -33,7 +33,7 @@ func NewClient(token, session, userAgent, authID string) *Client {
 }
 
 // Do makes an api call
-func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) (*http.Response, error) {
+func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, method, fmt.Sprintf("%s/%s", c.BaseURL, path), body)
 	if err != nil {
 		return nil, err
@@ -55,47 +55,41 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != expectedStatus {
 		return nil, fmt.Errorf("unexpected status: %d", resp.StatusCode)
 	}
 
-	return resp, nil
+	return ioutil.ReadAll(resp.Body)
 }
 
 // DownloadContent downloads a content
 func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
-	wg := &sync.WaitGroup{}
-	for i := 0; i < len(media); i++ {
-		m := media[i]
-		go func() {
-			wg.Add(1)
-			defer wg.Done()
-			source := getSource(m)
-			if source == "" {
-				return
-			}
+	for _, m := range media {
+		source := getSource(m)
+		if source == "" {
+			return
+		}
 
-			req, err := http.NewRequest(http.MethodGet, source, nil)
-			if err != nil {
-				log.Println(err)
-			}
+		req, err := http.NewRequest(http.MethodGet, source, nil)
+		if err != nil {
+			log.Println(err)
+		}
 
-			resp, err := c.Client.Do(req)
-			if err != nil {
-				log.Println(err)
-			}
+		resp, err := c.Client.Do(req)
+		if err != nil {
+			log.Println(err)
+		}
+		defer resp.Body.Close()
 
-			f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
-			err = SaveFile(saveDir, dir, f, resp.Body)
-			if err != nil {
-				log.Println(err)
-			}
-		}()
+		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
+		err = SaveFile(saveDir, dir, f, resp.Body)
+		if err != nil {
+			log.Println(err)
+		}
 	}
-
-	wg.Wait()
 }
 
 func getExtensionFromURL(url string) string {
