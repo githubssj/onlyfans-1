@@ -1,4 +1,4 @@
-# Go-OF
+# Go Onlyfans
 
 A go CLI to scrape and archive content from onlyfans.
 
