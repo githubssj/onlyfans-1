@@ -70,7 +70,8 @@ func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveD
 	for _, m := range media {
 		source := getSource(m)
 		if source == "" {
-			return
+			log.Println("invalid source - likely paywalled")
+			continue
 		}
 
 		req, err := http.NewRequest(http.MethodGet, source, nil)
