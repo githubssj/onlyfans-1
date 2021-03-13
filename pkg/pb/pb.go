@@ -4,9 +4,9 @@ import (
 	pbar "github.com/schollz/progressbar/v3"
 )
 
-func NewProgressBar() *pbar.ProgressBar {
+func NewProgressBar(size int64) *pbar.ProgressBar {
 	return pbar.DefaultBytes(
-		-1,
+		size,
 		"downloading onlyfans media...",
 	)
 }

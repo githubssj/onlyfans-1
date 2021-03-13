@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/januairi/go-of/pkg/pb"
-	pbar "github.com/schollz/progressbar/v3"
 )
 
 // Client describes an onlyfans client
@@ -22,7 +21,12 @@ type Onlyfans struct {
 	UserAgent string
 	AuthID    string
 	BaseURL   string
-	Bar       *pbar.ProgressBar
+}
+
+type content struct {
+	Name   string
+	Length int64
+	Body   io.Reader
 }
 
 // NewClient returns a new client
@@ -34,7 +38,6 @@ func NewClient(token, session, userAgent, authID string) *Onlyfans {
 		UserAgent: userAgent,
 		AuthID:    authID,
 		BaseURL:   "https://onlyfans.com/api2/v2/",
-		Bar:       pb.NewProgressBar(),
 	}
 }
 
@@ -73,6 +76,7 @@ func (c *Onlyfans) Do(ctx context.Context, method, path string, body io.Reader, 
 // DownloadContent downloads a content
 func (c *Onlyfans) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
+	contents := make([]*content, 0)
 	for _, m := range media {
 		source := getSource(m)
 		if source == "" {
@@ -92,11 +96,16 @@ func (c *Onlyfans) DownloadContent(ctx context.Context, media []Media, name, sav
 		defer resp.Body.Close()
 
 		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
-		defer c.Bar.Clear()
-		err = saveFile(saveDir, dir, f, resp, c.Bar)
-		if err != nil {
-			log.Println(err)
-		}
+		contents = append(contents, &content{
+			Name:   f,
+			Length: resp.ContentLength,
+			Body:   resp.Body,
+		})
+	}
+
+	err := saveFiles(saveDir, dir, contents)
+	if err != nil {
+		log.Println(err)
 	}
 }
 
@@ -117,26 +126,37 @@ func getSource(m Media) string {
 	return ""
 }
 
-func saveFile(dir, folder, fileName string, resp *http.Response, bar *pbar.ProgressBar) error {
+func saveFiles(dir, folder string, contents []*content) error {
 	base := fmt.Sprintf("%s/%s", dir, folder)
-	_, err := os.Stat(base)
-	if err != nil {
-		err = os.Mkdir(base, os.ModePerm)
+	bar := pb.NewProgressBar(getContentsLength(contents))
+	for _, c := range contents {
+		_, err := os.Stat(base)
+		if err != nil {
+			err = os.Mkdir(base, os.ModePerm)
+			if err != nil {
+				return err
+			}
+		}
+
+		file, err := os.Create(fmt.Sprintf("%s/%s", base, c.Name))
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(io.MultiWriter(file, bar), c.Body)
 		if err != nil {
 			return err
 		}
 	}
 
-	file, err := os.Create(fmt.Sprintf("%s/%s", base, fileName))
-	if err != nil {
-		return err
-	}
-
-	bar.ChangeMax(int(resp.ContentLength))
-	_, err = io.Copy(io.MultiWriter(file, bar), resp.Body)
-	if err != nil {
-		return err
-	}
-
 	return nil
+}
+
+func getContentsLength(contents []*content) int64 {
+	var len int64
+	for _, c := range contents {
+		len += c.Length
+	}
+
+	return len
 }
