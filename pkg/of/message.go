@@ -45,7 +45,7 @@ type listMessagesResponse struct {
 }
 
 // ListMessages lists messages from a user
-func (c *Onlyfans) ListMessages(ctx context.Context, userID int) ([]Message, error) {
+func (c *Client) ListMessages(ctx context.Context, userID int) ([]Message, error) {
 	hasMore := true
 	offset := 0
 	ms := make([]Message, 0)

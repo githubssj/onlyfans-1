@@ -49,7 +49,7 @@ type Highlight struct {
 }
 
 // ListHighlights from a user
-func (c *Onlyfans) ListHighlights(ctx context.Context, userID int) ([]*Highlight, error) {
+func (c *Client) ListHighlights(ctx context.Context, userID int) ([]*Highlight, error) {
 	path := fmt.Sprintf("/users/%d/stories/highlights?unf=1&app-token=%s&limit=10000", userID, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
@@ -76,7 +76,7 @@ func (c *Onlyfans) ListHighlights(ctx context.Context, userID int) ([]*Highlight
 }
 
 // GetHighlight from a user
-func (c *Onlyfans) GetHighlight(ctx context.Context, userID, storyID int) (*Highlight, error) {
+func (c *Client) GetHighlight(ctx context.Context, userID, storyID int) (*Highlight, error) {
 	path := fmt.Sprintf("/stories/highlights/%d?unf=1&app-token=%s", storyID, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {

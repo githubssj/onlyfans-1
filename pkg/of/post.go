@@ -103,7 +103,7 @@ type Post struct {
 }
 
 // ListPosts from a user
-func (c *Onlyfans) ListPosts(ctx context.Context, userID string) ([]*Post, error) {
+func (c *Client) ListPosts(ctx context.Context, userID string) ([]*Post, error) {
 	path := fmt.Sprintf("/users/%s/posts?app-token=%s&limit=1000", userID, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {
@@ -120,7 +120,7 @@ func (c *Onlyfans) ListPosts(ctx context.Context, userID string) ([]*Post, error
 }
 
 // ListArchivedPosts list archived posts from a user
-func (c *Onlyfans) ListArchivedPosts(ctx context.Context, userID int) ([]*Post, error) {
+func (c *Client) ListArchivedPosts(ctx context.Context, userID int) ([]*Post, error) {
 	path := fmt.Sprintf("/users/%d/posts/archived?app-token=%s", userID, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {

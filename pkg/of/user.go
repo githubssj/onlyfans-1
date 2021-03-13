@@ -145,7 +145,7 @@ type User struct {
 }
 
 // GetUser looks up an of user by their username
-func (c *Onlyfans) GetUser(ctx context.Context, username string) (*User, error) {
+func (c *Client) GetUser(ctx context.Context, username string) (*User, error) {
 	path := fmt.Sprintf("/users/%s?app-token=%s", username, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {

@@ -14,7 +14,7 @@ import (
 )
 
 // Client describes an onlyfans client
-type Onlyfans struct {
+type Client struct {
 	Client    *http.Client
 	Token     string
 	Session   string
@@ -30,8 +30,8 @@ type content struct {
 }
 
 // NewClient returns a new client
-func NewClient(token, session, userAgent, authID string) *Onlyfans {
-	return &Onlyfans{
+func NewClient(token, session, userAgent, authID string) *Client {
+	return &Client{
 		Client:    http.DefaultClient,
 		Token:     token,
 		Session:   session,
@@ -42,7 +42,7 @@ func NewClient(token, session, userAgent, authID string) *Onlyfans {
 }
 
 // Do makes an api call
-func (c *Onlyfans) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) ([]byte, error) {
+func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, method, fmt.Sprintf("%s/%s", c.BaseURL, path), body)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (c *Onlyfans) Do(ctx context.Context, method, path string, body io.Reader, 
 }
 
 // DownloadContent downloads a content
-func (c *Onlyfans) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
+func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
 	contents := make([]*content, 0)
 	for _, m := range media {
