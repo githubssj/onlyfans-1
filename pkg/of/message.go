@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -46,7 +45,7 @@ type listMessagesResponse struct {
 }
 
 // ListMessages lists messages from a user
-func (c *Client) ListMessages(ctx context.Context, userID int) ([]Message, error) {
+func (c *Onlyfans) ListMessages(ctx context.Context, userID int) ([]Message, error) {
 	hasMore := true
 	offset := 0
 	ms := make([]Message, 0)
@@ -64,14 +63,7 @@ func (c *Client) ListMessages(ctx context.Context, userID int) ([]Message, error
 			return nil, err
 		}
 
-		for _, m := range r.Messages {
-			ms = append(ms, m)
-		}
-
-		b, err = json.Marshal(&ms)
-		if err != nil {
-			log.Fatal(err)
-		}
+		ms = append(ms, r.Messages...)
 
 		hasMore = r.HasMore
 		offset++

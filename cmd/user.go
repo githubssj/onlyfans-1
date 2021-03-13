@@ -19,7 +19,7 @@ var getUserCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		c := of.NewClient(viper.GetString("token"), viper.GetString("session"), viper.GetString("user_agent"), viper.GetString("auth_id"))
 		ctx := context.Background()
-
+		log.Println("starting download process...")
 		user, err := c.GetUser(ctx, args[0])
 		if err != nil {
 			log.Fatal(err)

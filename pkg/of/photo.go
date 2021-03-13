@@ -67,7 +67,7 @@ type Source struct {
 }
 
 // ListPhotos from a user
-func (c *Client) ListPhotos(ctx context.Context, userID string) ([]*Photo, error) {
+func (c *Onlyfans) ListPhotos(ctx context.Context, userID string) ([]*Photo, error) {
 	path := fmt.Sprintf("/users/%s/posts/photos?limit=1000&order=publish_date_desc&skip_users=all&skip_users_dups=1&app-token=%s", userID, c.Token)
 	b, err := c.Do(ctx, http.MethodGet, path, nil, http.StatusOK)
 	if err != nil {

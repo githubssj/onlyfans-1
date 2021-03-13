@@ -7,33 +7,39 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/januairi/go-of/pkg/pb"
+	pbar "github.com/schollz/progressbar/v3"
 )
 
 // Client describes an onlyfans client
-type Client struct {
+type Onlyfans struct {
 	Client    *http.Client
 	Token     string
 	Session   string
 	UserAgent string
 	AuthID    string
 	BaseURL   string
+	Bar       *pbar.ProgressBar
 }
 
 // NewClient returns a new client
-func NewClient(token, session, userAgent, authID string) *Client {
-	return &Client{
+func NewClient(token, session, userAgent, authID string) *Onlyfans {
+	return &Onlyfans{
 		Client:    http.DefaultClient,
 		Token:     token,
 		Session:   session,
 		UserAgent: userAgent,
 		AuthID:    authID,
 		BaseURL:   "https://onlyfans.com/api2/v2/",
+		Bar:       pb.NewProgressBar(),
 	}
 }
 
 // Do makes an api call
-func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) ([]byte, error) {
+func (c *Onlyfans) Do(ctx context.Context, method, path string, body io.Reader, expectedStatus int) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, method, fmt.Sprintf("%s/%s", c.BaseURL, path), body)
 	if err != nil {
 		return nil, err
@@ -65,18 +71,18 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 }
 
 // DownloadContent downloads a content
-func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
+func (c *Onlyfans) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
 	for _, m := range media {
 		source := getSource(m)
 		if source == "" {
-			log.Println("invalid source - likely paywalled")
 			continue
 		}
 
 		req, err := http.NewRequest(http.MethodGet, source, nil)
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 
 		resp, err := c.Client.Do(req)
@@ -86,7 +92,8 @@ func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveD
 		defer resp.Body.Close()
 
 		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
-		err = SaveFile(saveDir, dir, f, resp.Body)
+		defer c.Bar.Clear()
+		err = saveFile(saveDir, dir, f, resp, c.Bar)
 		if err != nil {
 			log.Println(err)
 		}
@@ -108,4 +115,28 @@ func getSource(m Media) string {
 	}
 
 	return ""
+}
+
+func saveFile(dir, folder, fileName string, resp *http.Response, bar *pbar.ProgressBar) error {
+	base := fmt.Sprintf("%s/%s", dir, folder)
+	_, err := os.Stat(base)
+	if err != nil {
+		err = os.Mkdir(base, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
+	file, err := os.Create(fmt.Sprintf("%s/%s", base, fileName))
+	if err != nil {
+		return err
+	}
+
+	bar.ChangeMax(int(resp.ContentLength))
+	_, err = io.Copy(io.MultiWriter(file, bar), resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

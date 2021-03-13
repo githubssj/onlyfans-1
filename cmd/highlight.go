@@ -18,7 +18,7 @@ var downloadHighlightCmd = &cobra.Command{
 		c := of.NewClient(viper.GetString("token"), viper.GetString("session"), viper.GetString("user_agent"), viper.GetString("auth_id"))
 		username := args[0]
 		ctx := context.Background()
-
+		log.Println("starting download process...")
 		u, err := c.GetUser(ctx, username)
 		if err != nil {
 			log.Fatalf("unable to lookup user: %v", err)
