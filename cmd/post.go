@@ -31,10 +31,12 @@ var downloadPostcmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		saveDir := viper.GetString("save_dir")
+		media := make([]of.Media, len(ps))
 		for _, p := range ps {
-			c.DownloadContent(ctx, p.Media, u.Name, saveDir)
+			media = append(media, p.Media...)
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
 	},
 }
 

@@ -30,9 +30,12 @@ var downloadMessageCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		media := make([]of.Media, len(ms))
 		for _, m := range ms {
-			c.DownloadContent(ctx, m.Media, u.Name, viper.GetString("save_dir"))
+			media = append(media, m.Media...)
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
 	},
 }
 

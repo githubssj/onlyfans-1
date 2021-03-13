@@ -29,12 +29,14 @@ var downloadHighlightCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		media := make([]of.Media, 0)
 		for _, h := range hs {
 			for _, s := range h.Stories {
-				c.DownloadContent(ctx, s.Media, u.Name, viper.GetString("save_dir"))
-
+				media = append(media, s.Media...)
 			}
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
 	},
 }
 

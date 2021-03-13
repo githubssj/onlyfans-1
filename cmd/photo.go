@@ -30,23 +30,15 @@ var downloadPhotoCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		media := make([]of.Media, len(ps))
 		for _, p := range ps {
-			c.DownloadContent(ctx, p.Media, u.Name, viper.GetString("save_dir"))
-
+			media = append(media, p.Media...)
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
 	},
 }
 
 func init() {
 	downloadCmd.AddCommand(downloadPhotoCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// downloadPhotoCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// downloadPhotoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
