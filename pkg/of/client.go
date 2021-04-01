@@ -7,7 +7,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/januairi/go-of/pkg/pb"
 )
 
 // Client describes an onlyfans client
@@ -18,6 +21,12 @@ type Client struct {
 	UserAgent string
 	AuthID    string
 	BaseURL   string
+}
+
+type content struct {
+	Name   string
+	Length int64
+	Body   io.Reader
 }
 
 // NewClient returns a new client
@@ -67,16 +76,17 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader, ex
 // DownloadContent downloads a content
 func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveDir string) {
 	dir := strings.ReplaceAll(name, " ", "")
+	contents := make([]*content, 0)
 	for _, m := range media {
 		source := getSource(m)
 		if source == "" {
-			log.Println("invalid source - likely paywalled")
 			continue
 		}
 
 		req, err := http.NewRequest(http.MethodGet, source, nil)
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 
 		resp, err := c.Client.Do(req)
@@ -86,10 +96,16 @@ func (c *Client) DownloadContent(ctx context.Context, media []Media, name, saveD
 		defer resp.Body.Close()
 
 		f := fmt.Sprintf("%d.%s", m.ID, getExtensionFromURL(source))
-		err = SaveFile(saveDir, dir, f, resp.Body)
-		if err != nil {
-			log.Println(err)
-		}
+		contents = append(contents, &content{
+			Name:   f,
+			Length: resp.ContentLength,
+			Body:   resp.Body,
+		})
+	}
+
+	err := saveFiles(saveDir, dir, contents)
+	if err != nil {
+		log.Println(err)
 	}
 }
 
@@ -108,4 +124,39 @@ func getSource(m Media) string {
 	}
 
 	return ""
+}
+
+func saveFiles(dir, folder string, contents []*content) error {
+	base := fmt.Sprintf("%s/%s", dir, folder)
+	bar := pb.NewProgressBar(getContentsLength(contents))
+	for _, c := range contents {
+		_, err := os.Stat(base)
+		if err != nil {
+			err = os.Mkdir(base, os.ModePerm)
+			if err != nil {
+				return err
+			}
+		}
+
+		file, err := os.Create(fmt.Sprintf("%s/%s", base, c.Name))
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(io.MultiWriter(file, bar), c.Body)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func getContentsLength(contents []*content) int64 {
+	var len int64
+	for _, c := range contents {
+		len += c.Length
+	}
+
+	return len
 }

@@ -19,6 +19,7 @@ var downloadVideoCmd = &cobra.Command{
 		c := of.NewClient(viper.GetString("token"), viper.GetString("session"), viper.GetString("user_agent"), viper.GetString("auth_id"))
 		username := args[0]
 		ctx := context.Background()
+		log.Println("starting download process...")
 		u, err := c.GetUser(ctx, username)
 		if err != nil {
 			log.Fatalf("unable to lookup user: %v", err)
@@ -29,10 +30,12 @@ var downloadVideoCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		saveDir := viper.GetString("save_dir")
+		media := make([]of.Media, len(vs))
 		for _, v := range vs {
-			c.DownloadContent(ctx, v.Media, u.Name, saveDir)
+			media = append(media, v.Media...)
 		}
+
+		c.DownloadContent(ctx, media, u.Name, viper.GetString("save_dir"))
 	},
 }
 

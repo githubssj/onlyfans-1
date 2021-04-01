@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -64,14 +63,7 @@ func (c *Client) ListMessages(ctx context.Context, userID int) ([]Message, error
 			return nil, err
 		}
 
-		for _, m := range r.Messages {
-			ms = append(ms, m)
-		}
-
-		b, err = json.Marshal(&ms)
-		if err != nil {
-			log.Fatal(err)
-		}
+		ms = append(ms, r.Messages...)
 
 		hasMore = r.HasMore
 		offset++
