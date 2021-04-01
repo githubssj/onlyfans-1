@@ -147,6 +147,7 @@ func saveFiles(dir, folder string, contents []*content) error {
 		if err != nil {
 			return err
 		}
+		file.Close()
 	}
 
 	return nil
